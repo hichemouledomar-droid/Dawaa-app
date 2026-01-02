@@ -10,91 +10,910 @@
     <meta name="description" content="تطبيق مجاني لمساعدة المواطنين الجزائريين في العثور على الأدوية المتاحة في الصيدليات">
     <link rel="manifest" href="manifest.json">
     
+    <!-- Apple PWA Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="دواء">
+    
     <!-- Fonts & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* كل الCSS الذي أعطيته لك سابقاً */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        :root { --primary-color: #2E7D32; --secondary-color: #4CAF50; }
-        body { background: #f8f9fa; color: #333; padding: 20px; }
-        .container { max-width: 100%; }
-        header { background: linear-gradient(135deg, #2E7D32, #4CAF50); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        .logo { display: flex; align-items: center; gap: 15px; }
-        .logo i { font-size: 2.5rem; }
-        .hero { text-align: center; padding: 20px; background: #e8f5e9; border-radius: 15px; margin: 20px 0; }
-        .search-box { display: flex; gap: 10px; margin: 20px 0; }
-        .search-box input { flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 10px; }
-        .search-box button { background: #4CAF50; color: white; border: none; padding: 15px 25px; border-radius: 10px; }
-        .pharmacy-card { background: white; padding: 20px; border-radius: 15px; margin: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .install-btn { position: fixed; bottom: 20px; left: 20px; background: #4CAF50; color: white; padding: 15px; border-radius: 50%; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
         
-        /* أضف باقي الCSS هنا */
+        :root {
+            --primary-color: #2E7D32;
+            --secondary-color: #4CAF50;
+            --accent-color: #FF9800;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            max-width: 100vw;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+        
+        .app-container {
+            max-width: 100%;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+        }
+        
+        .app-title h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .app-title .tagline {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .free-badge {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-right: 5px solid var(--accent-color);
+        }
+        
+        .hero-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.6rem;
+        }
+        
+        .hero-section p {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        /* Search Section */
+        .search-container {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+        
+        .search-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            width: 60px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: var(--primary-color);
+        }
+        
+        .location-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .location-selector i {
+            color: var(--secondary-color);
+        }
+        
+        /* Quick Filters */
+        .quick-filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 15px 0;
+            margin-bottom: 25px;
+            scrollbar-width: none;
+        }
+        
+        .quick-filters::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* Section Title */
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin: 25px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Pharmacies List */
+        .pharmacies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .pharmacy-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .pharmacy-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .pharmacy-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .pharmacy-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .pharmacy-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .pharmacy-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+        
+        .pharmacy-details p {
+            color: #666;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        
+        .distance-badge {
+            background: #e8f5e9;
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        
+        .pharmacy-medicines {
+            padding: 20px;
+        }
+        
+        .medicine-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .medicine-item:last-child {
+            border-bottom: none;
+        }
+        
+        .medicine-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        .medicine-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .status-available {
+            color: var(--secondary-color);
+        }
+        
+        .status-unavailable {
+            color: #f44336;
+        }
+        
+        /* Pharmacy Registration Banner */
+        .subscription-banner {
+            background: linear-gradient(135deg, #1565C0, #1976D2);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .subscription-banner h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .subscription-banner p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .pharmacy-register-btn {
+            background: white;
+            color: #1565C0;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .pharmacy-register-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Install Button */
+        .install-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 10px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        /* Offline Banner */
+        .offline-banner {
+            background: #ff9800;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1001;
+            display: none;
+        }
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .search-box { flex-direction: column; }
-            .logo i { font-size: 2rem; }
+            .app-title h1 {
+                font-size: 1.5rem;
+            }
+            
+            .hero-section h2 {
+                font-size: 1.4rem;
+            }
+            
+            .pharmacy-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .distance-badge {
+                align-self: flex-start;
+            }
+            
+            .install-btn {
+                bottom: 20px;
+                left: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .bottom-nav {
+                padding: 12px 5px;
+            }
+            
+            .nav-icon {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .filter-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
+    <div class="app-container">
+        <!-- App Header -->
+        <header class="app-header">
             <div class="logo">
-                <i class="fas fa-pills"></i>
-                <h1>دواء - تطبيق الأدوية</h1>
+                <div class="logo-icon">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="app-title">
+                    <h1>دواء - تطبيق الأدوية</h1>
+                    <div class="tagline">خدمة مجانية لكل الجزائريين 🇩🇿</div>
+                </div>
             </div>
-            <p>مجاني لكل الجزائريين 🇩🇿</p>
+            <div class="free-badge">
+                <i class="fas fa-heart"></i> مجاني للمواطنين
+            </div>
         </header>
         
-        <div class="hero">
-            <h2>ابحث عن دوائك في أقرب صيدلية</h2>
-            <p>وفر وقتك وجهدك في البحث عن الأدوية</p>
+        <!-- Offline Banner -->
+        <div class="offline-banner" id="offlineBanner">
+            <i class="fas fa-wifi-slash"></i> أنت غير متصل بالإنترنت
         </div>
         
-        <div class="search-box">
-            <input type="text" placeholder="اسم الدواء أو المادة الفعالة...">
-            <button><i class="fas fa-search"></i> بحث</button>
-        </div>
-        
-        <div class="pharmacy-card">
-            <h3><i class="fas fa-clinic-medical"></i> صيدلية النهضة</h3>
-            <p><i class="fas fa-map-marker-alt"></i> الجزائر العاصمة</p>
-            <p><i class="fas fa-phone"></i> 0550-123-456</p>
-            <div class="medicines">
-                <p><i class="fas fa-check-circle" style="color:green;"></i> باراسيتامول - متوفر</p>
-                <p><i class="fas fa-check-circle" style="color:green;"></i> أموكسيسيلين - متوفر</p>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h2>ابحث عن دوائك في أقرب صيدلية</h2>
+                <p>وفر وقتك وجهدك في البحث عن الأدوية المتوفرة</p>
+                <p>خدمة مجانية تساعد المواطنين الجزائريين</p>
+            </section>
+            
+            <!-- Search Section -->
+            <section class="search-container">
+                <div class="search-box">
+                    <input type="text" id="medicineSearch" placeholder="ابحث عن دواء أو مادة فعالة...">
+                    <button class="search-btn" id="searchButton">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="location-selector" id="locationSelector">
+                    <div>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="locationText">تحديد موقعك</span>
+                    </div>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </section>
+            
+            <!-- Quick Filters -->
+            <div class="quick-filters">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-th-large"></i> الكل
+                </button>
+                <button class="filter-btn" data-filter="available">
+                    <i class="fas fa-check-circle"></i> متوفر
+                </button>
+                <button class="filter-btn" data-filter="nearby">
+                    <i class="fas fa-map-marker-alt"></i> الأقرب
+                </button>
+                <button class="filter-btn" data-filter="emergency">
+                    <i class="fas fa-ambulance"></i> طوارئ
+                </button>
+                <button class="filter-btn" data-filter="chronic">
+                    <i class="fas fa-heartbeat"></i> أمراض مزمنة
+                </button>
             </div>
-        </div>
+            
+            <!-- Pharmacies Section -->
+            <h2 class="section-title">
+                <i class="fas fa-clinic-medical"></i>
+                الصيدليات القريبة
+            </h2>
+            
+            <div class="pharmacies-list" id="pharmaciesList">
+                <!-- Pharmacies will be loaded by JavaScript -->
+            </div>
+            
+            <!-- Subscription Banner for Pharmacies -->
+            <div class="subscription-banner">
+                <h3>هل تملك صيدلية؟</h3>
+                <p>انضم إلى شبكتنا وزد من وصولك للعملاء</p>
+                <button class="pharmacy-register-btn" id="pharmacyRegisterBtn">
+                    سجل صيدليتك الآن
+                </button>
+            </div>
+        </main>
         
-        <button class="install-btn" id="installBtn">
+        <!-- Install Button -->
+        <button class="install-btn" id="installBtn" style="display: none;">
             <i class="fas fa-download"></i>
         </button>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-home nav-icon"></i>
+                الرئيسية
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-search nav-icon"></i>
+                بحث
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-heart nav-icon"></i>
+                المفضلة
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-history nav-icon"></i>
+                السجل
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-user nav-icon"></i>
+                حسابي
+            </a>
+        </nav>
     </div>
 
+    <!-- JavaScript -->
     <script>
+        // بيانات الصيدليات
+        const pharmaciesData = [
+            {
+                id: 1,
+                name: "صيدلية النهضة",
+                address: "حي الجزائر الوسطى، الجزائر العاصمة",
+                phone: "0550-123-456",
+                distance: "0.5 كم",
+                open: "مفتوح 24 ساعة",
+                medicines: [
+                    { name: "باراسيتامول 500 مجم", available: true, price: "25 دج" },
+                    { name: "أموكسيسيلين 500 مجم", available: true, price: "45 دج" },
+                    { name: "فيتامين سي 1000 مجم", available: false, price: "30 دج" },
+                    { name: "ديكلوفيناك 50 مجم", available: true, price: "18 دج" }
+                ]
+            },
+            {
+                id: 2,
+                name: "صيدلية الأمل",
+                address: "حي بولوغين، الجزائر",
+                phone: "0550-789-123",
+                distance: "1.2 كم",
+                open: "8:00 - 22:00",
+                medicines: [
+                    { name: "باراسيتامول 500 مجم", available: true, price: "23 دج" },
+                    { name: "أموكسيسيلين 500 مجم", available: false, price: "42 دج" },
+                    { name: "فيتامين سي 1000 مجم", available: true, price: "28 دج" },
+                    { name: "لوراتادين 10 مجم", available: true, price: "22 دج" }
+                ]
+            },
+            {
+                id: 3,
+                name: "صيدلية السلام",
+                address: "حي باب الزوار، الجزائر",
+                phone: "0550-456-789",
+                distance: "2.1 كم",
+                open: "7:00 - 23:00",
+                medicines: [
+                    { name: "باراسيتامول 500 مجم", available: false, price: "24 دج" },
+                    { name: "أموكسيسيلين 500 مجم", available: true, price: "44 دج" },
+                    { name: "فيتامين سي 1000 مجم", available: true, price: "29 دج" },
+                    { name: "ميتفورمين 500 مجم", available: true, price: "15 دج" }
+                ]
+            },
+            {
+                id: 4,
+                name: "صيدلية الحياة",
+                address: "حي القبة، الجزائر",
+                phone: "0550-987-654",
+                distance: "3.5 كم",
+                open: "9:00 - 21:00",
+                medicines: [
+                    { name: "باراسيتامول 500 مجم", available: true, price: "26 دج" },
+                    { name: "أموكسيسيلين 500 مجم", available: true, price: "43 دج" },
+                    { name: "أوميغا 3 1000 مجم", available: true, price: "65 دج" },
+                    { name: "أسبرين 100 مجم", available: true, price: "12 دج" }
+                ]
+            }
+        ];
+
+        // توليد قائمة الصيدليات
+        function generatePharmaciesList() {
+            const container = document.getElementById('pharmaciesList');
+            container.innerHTML = '';
+            
+            pharmaciesData.forEach(pharmacy => {
+                const medicinesHtml = pharmacy.medicines.map(med => `
+                    <div class="medicine-item">
+                        <span class="medicine-name">${med.name}</span>
+                        <div class="medicine-status ${med.available ? 'status-available' : 'status-unavailable'}">
+                            <i class="fas fa-${med.available ? 'check' : 'times'}"></i>
+                            ${med.available ? 'متوفر' : 'غير متوفر'}
+                            <span style="margin-right: 10px; color: #666;">${med.price}</span>
+                        </div>
+                    </div>
+                `).join('');
+                
+                const card = document.createElement('div');
+                card.className = 'pharmacy-card';
+                card.innerHTML = `
+                    <div class="pharmacy-header">
+                        <div class="pharmacy-info">
+                            <div class="pharmacy-avatar">
+                                <i class="fas fa-clinic-medical"></i>
+                            </div>
+                            <div class="pharmacy-details">
+                                <h3>${pharmacy.name}</h3>
+                                <p><i class="fas fa-map-marker-alt"></i> ${pharmacy.address}</p>
+                                <p><i class="fas fa-phone"></i> ${pharmacy.phone}</p>
+                                <p><i class="fas fa-clock"></i> ${pharmacy.open}</p>
+                            </div>
+                        </div>
+                        <div class="distance-badge">
+                            <i class="fas fa-walking"></i> ${pharmacy.distance}
+                        </div>
+                    </div>
+                    <div class="pharmacy-medicines">
+                        ${medicinesHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // البحث عن الأدوية
+        document.getElementById('searchButton').addEventListener('click', performSearch);
+        document.getElementById('medicineSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        function performSearch() {
+            const searchTerm = document.getElementById('medicineSearch').value.trim();
+            if (searchTerm === '') return;
+            
+            // محاكاة البحث
+            alert(`جاري البحث عن: "${searchTerm}"\nسيظهر في الإصدار القادم البحث الحقيقي`);
+            
+            // يمكنك إضافة منطق البحث الحقيقي هنا
+            const filteredPharmacies = pharmaciesData.filter(pharmacy => 
+                pharmacy.medicines.some(med => 
+                    med.name.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            );
+            
+            if (filteredPharmacies.length === 0) {
+                alert(`لم يتم العثور على "${searchTerm}" في الصيدليات القريبة`);
+            }
+        }
+
+        // تحديد الموقع
+        document.getElementById('locationSelector').addEventListener('click', function() {
+            const locationText = document.getElementById('locationText');
+            locationText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تحديد الموقع...';
+            
+            // محاكاة تحديد الموقع
+            setTimeout(() => {
+                locationText.innerHTML = '<i class="fas fa-map-marker-alt"></i> الجزائر العاصمة';
+                alert('تم تحديد موقعك: الجزائر العاصمة\n(يمكنك تغييره في الإصدار القادم)');
+            }, 1500);
+        });
+
+        // فلتر الصيدليات
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                let filteredData = [...pharmaciesData];
+                
+                if (filter === 'available') {
+                    filteredData = pharmaciesData.filter(pharmacy => 
+                        pharmacy.medicines.some(med => med.available)
+                    );
+                } else if (filter === 'nearby') {
+                    filteredData.sort((a, b) => {
+                        const distA = parseFloat(a.distance);
+                        const distB = parseFloat(b.distance);
+                        return distA - distB;
+                    });
+                } else if (filter === 'emergency') {
+                    alert('فلتر الطوارئ: الصيدليات المفتوحة 24 ساعة\n(سيظهر في الإصدار القادم)');
+                }
+                
+                // عرض البيانات المفلترة
+                if (filter !== 'all') {
+                    const container = document.getElementById('pharmaciesList');
+                    container.innerHTML = '';
+                    
+                    filteredData.forEach(pharmacy => {
+                        const medicinesHtml = pharmacy.medicines.map(med => `
+                            <div class="medicine-item">
+                                <span class="medicine-name">${med.name}</span>
+                                <div class="medicine-status ${med.available ? 'status-available' : 'status-unavailable'}">
+                                    <i class="fas fa-${med.available ? 'check' : 'times'}"></i>
+                                    ${med.available ? 'متوفر' : 'غير متوفر'}
+                                </div>
+                            </div>
+                        `).join('');
+                        
+                        const card = document.createElement('div');
+                        card.className = 'pharmacy-card';
+                        card.innerHTML = `
+                            <div class="pharmacy-header">
+                                <div class="pharmacy-info">
+                                    <div class="pharmacy-avatar">
+                                        <i class="fas fa-clinic-medical"></i>
+                                    </div>
+                                    <div class="pharmacy-details">
+                                        <h3>${pharmacy.name}</h3>
+                                        <p><i class="fas fa-map-marker-alt"></i> ${pharmacy.address}</p>
+                                        <p><i class="fas fa-phone"></i> ${pharmacy.phone}</p>
+                                    </div>
+                                </div>
+                                <div class="distance-badge">
+                                    <i class="fas fa-walking"></i> ${pharmacy.distance}
+                                </div>
+                            </div>
+                            <div class="pharmacy-medicines">
+                                ${medicinesHtml}
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                } else {
+                    generatePharmaciesList();
+                }
+            });
+        });
+
         // PWA Installation
         let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('installBtn').style.display = 'block';
+            installBtn.style.display = 'flex';
         });
 
-        document.getElementById('installBtn').addEventListener('click', async () => {
+        installBtn.addEventListener('click', async () => {
             if (!deferredPrompt) return;
+            
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
+            
             if (outcome === 'accepted') {
-                alert('تم تثبيت التطبيق بنجاح!');
+                installBtn.innerHTML = '<i class="fas fa-check"></i>';
+                installBtn.style.background = '#4CAF50';
+                installBtn.style.animation = 'none';
+                alert('تم تثبيت التطبيق بنجاح! ✓');
             }
+            deferredPrompt = null;
         });
 
-        // Search functionality
-        document.querySelector('.search-box button').addEventListener('click', function() {
-            const searchTerm = document.querySelector('.search-box input').value;
-            if (searchTerm) {
-                alert('جاري البحث عن: ' + searchTerm);
+        // تسجيل الصيدلية
+        document.getElementById('pharmacyRegisterBtn').addEventListener('click', function() {
+            alert('شكراً لاهتمامك!\n\nللتسجيل، يرجى:\n1. الاتصال على: 0770-123-456\n2. أو زيارة: www.dawaa.dz/register\n\n(في الإصدار القادم: تسجيل مباشر من التطبيق)');
+        });
+
+        // تفعيل التنقل السفلي
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                const page = this.querySelector('.nav-icon').className;
+                if (page.includes('fa-search')) {
+                    document.getElementById('medicineSearch').focus();
+                }
+            });
+        });
+
+        // اكتشاف الاتصال بالإنترنت
+        window.addEventListener('online', () => {
+            document.getElementById('offlineBanner').style.display = 'none';
+        });
+
+        window.addEventListener('offline', () => {
+            document.getElementById('offlineBanner').style.display = 'block';
+        });
+
+        // تهيئة التطبيق
+        window.onload = function() {
+            generatePharmaciesList();
+            
+            // محاكاة اتصال إنترنت
+            if (!navigator.onLine) {
+                document.getElementById('offlineBanner').style.display = 'block';
+            }
+            
+            // تحميل Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            }
+        };
+
+        // نسخ رقم الهاتف عند الضغط عليه
+        document.addEventListener('click', function(e) {
+            if (e.target.className.includes('fa-phone') || 
+                e.target.parentElement.className.includes('fa-phone')) {
+                const phoneNumber = e.target.closest('p').textContent.replace(/\D/g, '');
+                navigator.clipboard.writeText(phoneNumber)
+                    .then(() => alert(`تم نسخ الرقم: ${phoneNumber}`))
+                    .catch(err => console.log('Error copying:', err));
             }
         });
     </script>
