@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دواء - تطبيق الأدوية في الجزائر</title>
+    
+    <!-- PWA Required Meta Tags -->
+    <meta name="theme-color" content="#2E7D32">
+    <meta name="description" content="تطبيق مجاني لمساعدة المواطنين الجزائريين في العثور على الأدوية المتاحة في الصيدليات">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* كل الCSS الذي أعطيته لك سابقاً */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        :root { --primary-color: #2E7D32; --secondary-color: #4CAF50; }
+        body { background: #f8f9fa; color: #333; padding: 20px; }
+        .container { max-width: 100%; }
+        header { background: linear-gradient(135deg, #2E7D32, #4CAF50); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        .logo { display: flex; align-items: center; gap: 15px; }
+        .logo i { font-size: 2.5rem; }
+        .hero { text-align: center; padding: 20px; background: #e8f5e9; border-radius: 15px; margin: 20px 0; }
+        .search-box { display: flex; gap: 10px; margin: 20px 0; }
+        .search-box input { flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 10px; }
+        .search-box button { background: #4CAF50; color: white; border: none; padding: 15px 25px; border-radius: 10px; }
+        .pharmacy-card { background: white; padding: 20px; border-radius: 15px; margin: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .install-btn { position: fixed; bottom: 20px; left: 20px; background: #4CAF50; color: white; padding: 15px; border-radius: 50%; }
+        
+        /* أضف باقي الCSS هنا */
+        @media (max-width: 768px) {
+            .search-box { flex-direction: column; }
+            .logo i { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-pills"></i>
+                <h1>دواء - تطبيق الأدوية</h1>
+            </div>
+            <p>مجاني لكل الجزائريين 🇩🇿</p>
+        </header>
+        
+        <div class="hero">
+            <h2>ابحث عن دوائك في أقرب صيدلية</h2>
+            <p>وفر وقتك وجهدك في البحث عن الأدوية</p>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" placeholder="اسم الدواء أو المادة الفعالة...">
+            <button><i class="fas fa-search"></i> بحث</button>
+        </div>
+        
+        <div class="pharmacy-card">
+            <h3><i class="fas fa-clinic-medical"></i> صيدلية النهضة</h3>
+            <p><i class="fas fa-map-marker-alt"></i> الجزائر العاصمة</p>
+            <p><i class="fas fa-phone"></i> 0550-123-456</p>
+            <div class="medicines">
+                <p><i class="fas fa-check-circle" style="color:green;"></i> باراسيتامول - متوفر</p>
+                <p><i class="fas fa-check-circle" style="color:green;"></i> أموكسيسيلين - متوفر</p>
+            </div>
+        </div>
+        
+        <button class="install-btn" id="installBtn">
+            <i class="fas fa-download"></i>
+        </button>
+    </div>
+
+    <script>
+        // PWA Installation
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').style.display = 'block';
+        });
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                alert('تم تثبيت التطبيق بنجاح!');
+            }
+        });
+
+        // Search functionality
+        document.querySelector('.search-box button').addEventListener('click', function() {
+            const searchTerm = document.querySelector('.search-box input').value;
+            if (searchTerm) {
+                alert('جاري البحث عن: ' + searchTerm);
+            }
+        });
+    </script>
+</body>
+</html>
